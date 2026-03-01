@@ -294,6 +294,14 @@ async function setStateForTab(tabId, url) {
 
 /* ---------- Navigation listeners ---------- */
 
+browser.runtime.onInstalled.addListener((details) => {
+  if (details.reason === "install") {
+    browser.tabs.create({
+      url: "https://eli-69.github.io/Risklens.github.io/"
+    });
+  }
+});
+
 browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   if (changeInfo.status !== "complete") return;
   if (!tab?.url || !isHttpUrl(tab.url)) return;
