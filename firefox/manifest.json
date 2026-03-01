@@ -28,7 +28,7 @@
     "gecko": {
       "id": "risk-lens@yourdomain.com",
       "data_collection_permissions": {
-        "required": ["browsingData"],
+        "required": ["browsingActivity"],
         "optional": []
       }
     }
