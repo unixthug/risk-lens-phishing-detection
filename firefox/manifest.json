@@ -24,6 +24,15 @@
     "page": "options.html",
     "open_in_tab": true
   },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "risk-lens@yourdomain.com",
+      "data_collection_permissions": {
+        "required": ["web_browsing_history"],
+        "optional": []
+      }
+    }
+  },
   "web_accessible_resources": [
     "warning.html",
     "warning.js",
