@@ -27,6 +27,8 @@
   "web_accessible_resources": [
     "warning.html",
     "warning.js",
+    "checking.html",
+    "checking.js",
     "icons/safe.png",
     "icons/sus.png",
     "icons/danger.png"

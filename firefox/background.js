@@ -292,6 +292,31 @@ async function setStateForTab(tabId, url) {
   await browser.browserAction.setTitle({ tabId, title });
 }
 
+/* ------------------------------ URL scoring (no tab) ----------------------- */
+
+/* Scores a URL and stores the result in hostCache without needing a tab ID.
+   Called by checking.js via SCORE_URL_NOW so the result is ready to poll. */
+async function scoreUrlInBackground(urlString) {
+  const host = hostnameOf(urlString);
+  if (!host) return;
+
+  /* Already cached — nothing to do */
+  if (getCachedForHost(host)) return;
+
+  const result = await fetchModelScore(urlString);
+  hostCache[host] = {
+    score: result.score,
+    label: result.label,
+    verdict: result.verdict,
+    explanations: result.explanations || [],
+    raw: result.raw || null,
+    reason: result.reason || null,
+    error: result.error || null,
+    updatedAtMs: now(),
+  };
+  await saveHostCache();
+}
+
 /* ---------- Navigation listeners ---------- */
 
 browser.runtime.onInstalled.addListener((details) => {
@@ -330,6 +355,12 @@ browser.runtime.onMessage.addListener(async (msg) => {
     return;
   }
 
+  /* ── NEW: checking.html asks background to score a URL right away ── */
+  if (msg?.type === "SCORE_URL_NOW" && typeof msg.url === "string") {
+    await scoreUrlInBackground(msg.url);
+    return;
+  }
+
   /* warning.html sends this when the user clicks "Continue Anyway" */
   if (msg?.type === "ALLOW_ONCE") {
     const targetUrl = typeof msg.url === "string" ? msg.url : "";
@@ -365,8 +396,9 @@ browser.webRequest.onBeforeRequest.addListener(
       const url = details.url;
       if (!isHttpUrl(url)) return {};
 
-      const warningPrefix = browser.runtime.getURL("warning.html");
-      if (url.startsWith(warningPrefix)) return {};
+      /* Never intercept our own extension pages */
+      const extBase = browser.runtime.getURL("");
+      if (url.startsWith(extBase)) return {};
 
       if (isAllowlisted(url)) return {};
 
@@ -374,7 +406,14 @@ browser.webRequest.onBeforeRequest.addListener(
       if (!host) return {};
 
       const cached = getCachedForHost(host);
-      if (!cached || cached.score == null) return {};
+
+      /* ── CHANGED: no cache → gate behind checking.html instead of allowing through ── */
+      if (!cached || cached.score == null) {
+        const checkUrl = browser.runtime.getURL(
+          `checking.html?target=${encodeURIComponent(url)}`
+        );
+        return { redirectUrl: checkUrl };
+      }
 
       const isDanger =
         Number(cached.score) >= Number(settings.dangerThreshold);

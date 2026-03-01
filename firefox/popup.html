@@ -68,6 +68,15 @@
     .icon-btn:active { transform: translateY(1px); }
     .icon-btn svg { width: 15px; height: 15px; fill: var(--text); transition: fill 160ms ease; }
 
+    /* Sun icon uses stroke not fill */
+    .icon-sun { fill: none !important; }
+
+    /* Show/hide theme icons based on mode */
+    body:not(.light-mode) .icon-moon { display: block; }
+    body:not(.light-mode) .icon-sun  { display: none;  }
+    body.light-mode        .icon-moon { display: none;  }
+    body.light-mode        .icon-sun  { display: block; }
+
     /* Tooltips */
     .icon-btn[data-tip]::after {
       content: attr(data-tip);
@@ -258,9 +267,23 @@
       </svg>
     </button>
 
+    <!-- Theme toggle: moon in dark mode, sun in light mode -->
     <button class="icon-btn" id="darkModeBtn" aria-label="Toggle theme" data-tip="Toggle theme">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
+      <!-- Moon: shown in dark mode -->
+      <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true">
         <path d="M12 2a9.93 9.93 0 0 0-3 19.45A9 9 0 1 1 12 2z"/>
+      </svg>
+      <!-- Sun: shown in light mode -->
+      <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="4.2" fill="currentColor"/>
+        <line x1="12" y1="2"    x2="12" y2="4.8"  stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <line x1="12" y1="19.2" x2="12" y2="22"   stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <line x1="2"  y1="12"   x2="4.8"  y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <line x1="19.2" y1="12" x2="22"   y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <line x1="5.22" y1="5.22" x2="7.22" y2="7.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <line x1="16.78" y1="16.78" x2="18.78" y2="18.78" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <line x1="18.78" y1="5.22" x2="16.78" y2="7.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <line x1="7.22"  y1="16.78" x2="5.22" y2="18.78" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
       </svg>
     </button>
 
