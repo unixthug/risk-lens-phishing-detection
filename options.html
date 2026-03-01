@@ -1,0 +1,213 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>RiskLens — Settings</title>
+  <style>
+    :root {
+      --bg: #0b1220;
+      --card: #111827;
+      --border: rgba(148,163,184,.14);
+      --text: #e5e7eb;
+      --muted: rgba(226,232,240,.55);
+      --green: #65CB00;
+      --greenDim: rgba(101,203,0,.12);
+      --btn: #1e293b;
+    }
+
+    * { box-sizing: border-box; margin: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex; align-items: flex-start; justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .wrap {
+      width: 520px; max-width: 100%;
+    }
+
+    h1 {
+      font-size: 22px; font-weight: 800;
+      letter-spacing: -.3px;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 13px; color: var(--muted);
+      margin-bottom: 24px; line-height: 1.4;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      display: grid; gap: 20px;
+    }
+
+    .field { display: grid; gap: 6px; }
+
+    .field-label {
+      font-size: 14px; font-weight: 600;
+    }
+
+    .field-desc {
+      font-size: 12px; color: var(--muted); line-height: 1.4;
+    }
+
+    /* Toggle switch */
+    .toggle-row {
+      display: flex; align-items: center; gap: 12px;
+    }
+
+    .switch {
+      position: relative;
+      width: 42px; height: 24px;
+      flex-shrink: 0;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .switch .slider {
+      position: absolute; inset: 0;
+      background: rgba(148,163,184,.20);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 200ms ease;
+    }
+    .switch .slider::after {
+      content: "";
+      position: absolute;
+      left: 3px; top: 3px;
+      width: 18px; height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 200ms ease;
+    }
+    .switch input:checked + .slider {
+      background: var(--green);
+    }
+    .switch input:checked + .slider::after {
+      transform: translateX(18px);
+    }
+
+    /* Select */
+    select {
+      appearance: none;
+      background: var(--btn);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      width: 100%;
+      max-width: 280px;
+      outline: none;
+      transition: border-color 160ms ease;
+    }
+    select:focus { border-color: var(--green); }
+
+    /* Save button */
+    .actions { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+
+    .save-btn {
+      appearance: none; border: none;
+      background: var(--green);
+      color: #071100;
+      font-weight: 700; font-size: 13px;
+      padding: 10px 22px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: filter 160ms ease, transform 60ms ease;
+    }
+    .save-btn:hover { filter: brightness(1.1); }
+    .save-btn:active { transform: translateY(1px); }
+
+    .status-msg {
+      font-size: 12px; color: var(--green);
+      opacity: 0; transition: opacity 200ms ease;
+    }
+    .status-msg.show { opacity: 1; }
+
+    /* Separator */
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Info note */
+    .info-note {
+      font-size: 11.5px; color: var(--muted);
+      line-height: 1.5;
+      background: var(--greenDim);
+      border: 1px solid rgba(101,203,0,.18);
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+    .info-note strong { color: var(--green); font-weight: 700; }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <h1>RiskLens Settings</h1>
+    <p class="subtitle">Configure how RiskLens protects your browsing.</p>
+
+    <div class="card">
+      <!-- Blocking toggle -->
+      <div class="field">
+        <div class="toggle-row">
+          <label class="switch">
+            <input id="blockingEnabled" type="checkbox" />
+            <span class="slider"></span>
+          </label>
+          <span class="field-label">Enable site blocking</span>
+        </div>
+        <div class="field-desc">
+          When enabled, RiskLens will redirect to a warning page before loading sites scored as dangerous.
+        </div>
+      </div>
+
+      <hr />
+
+      <!-- Bypass duration -->
+      <div class="field">
+        <div class="field-label">"Continue anyway" bypass duration</div>
+        <div class="field-desc">
+          How long the bypass lasts after you click "Continue Anyway" on the warning page.
+        </div>
+        <select id="bypassDuration">
+          <option value="15">15 minutes</option>
+          <option value="30">30 minutes</option>
+          <option value="45">45 minutes</option>
+          <option value="60">1 hour</option>
+          <option value="120">2 hours</option>
+          <option value="240">4 hours</option>
+          <option value="480">8 hours</option>
+          <option value="1440">24 hours</option>
+          <option value="0">Always (permanent)</option>
+        </select>
+      </div>
+
+      <hr />
+
+      <!-- Info note about threshold -->
+      <div class="info-note">
+        <strong>Note:</strong> The danger threshold (70/100) is fixed to keep you safe and cannot be adjusted.
+        Sites scoring at or above this level will trigger the warning page when blocking is enabled.
+      </div>
+
+      <!-- Save -->
+      <div class="actions">
+        <button class="save-btn" id="saveBtn">Save settings</button>
+        <span class="status-msg" id="status">Saved!</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+{
+  "manifest_version": 2,
+  "name": "RiskLens",
+  "version": "0.4.0",
+  "description": "Scores sites for phishing risk and can warn/block navigation with an interstitial.",
+  "permissions": [
+    "tabs",
+    "storage",
+    "webRequest",
+    "webRequestBlocking",
+    "<all_urls>",
+    "https://risklens-api-9e7l.onrender.com/*"
+  ],
+  "browser_action": {
+    "default_title": "RiskLens",
+    "default_popup": "popup.html",
+    "default_icon": "icons/safe.png"
+  },
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "web_accessible_resources": [
+    "warning.html",
+    "warning.js",
+    "icons/safe.png",
+    "icons/sus.png",
+    "icons/danger.png"
+  ]
+}
