@@ -22,8 +22,8 @@ function scoreColor(score) {
     return { stroke: "var(--muted)", cls: "" };
   }
   const s = Number(score);
-  if (s >= 70) return { stroke: "var(--red)", cls: "danger" };
-  if (s >= 40) return { stroke: "var(--amber)", cls: "suspicious" };
+  if (s >= 85) return { stroke: "var(--red)", cls: "danger" };
+  if (s >= 65) return { stroke: "var(--amber)", cls: "suspicious" };
   return { stroke: "var(--green)", cls: "safe" };
 }
 

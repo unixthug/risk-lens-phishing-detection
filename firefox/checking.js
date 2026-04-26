@@ -51,7 +51,7 @@
     if (entry && typeof entry.score !== "undefined" && entry.score !== null) {
       /* Score is ready — decide where to send the user */
       const score = Number(entry.score);
-      const dangerThreshold = 70;
+      const dangerThreshold = 85; /* Must match background.js */
 
       if (Number.isFinite(score) && score >= dangerThreshold) {
         /* Dangerous — show warning page */

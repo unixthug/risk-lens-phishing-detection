@@ -5,7 +5,7 @@ const DEFAULTS = {
   apiKey: "AIzaSyCd8QKokSdoMt7oYBoulmYMftCNOKccr4Y",
   blockingEnabled: true,
   /* Danger threshold is fixed — not user-configurable for safety */
-  dangerThreshold: 70,
+  dangerThreshold: 85,
   cacheTtlMinutes: 10,
   bypassDurationMinutes: 60,
 };
@@ -133,8 +133,8 @@ function scoreToLabel(score) {
   if (score == null) return "safe";
   const s = Number(score);
   if (!Number.isFinite(s)) return "safe";
-  if (s >= 70) return "danger";
-  if (s >= 40) return "suspicious";
+  if (s >= 85) return "danger";
+  if (s >= 65) return "suspicious";
   return "safe";
 }
 
