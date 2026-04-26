@@ -26,10 +26,7 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
-      background:
-        radial-gradient(800px 450px at 15% 10%, rgba(239,68,68,.10), transparent 60%),
-        radial-gradient(800px 450px at 85% 15%, rgba(148,163,184,.06), transparent 55%),
-        var(--bg);
+      background: var(--bg);
       color: var(--text);
       min-height: 100vh;
       display: flex; align-items: center; justify-content: center;
@@ -55,6 +52,21 @@
       align-items: flex-start;
       border-bottom: 1px solid var(--border);
       background: linear-gradient(180deg, rgba(239,68,68,.08), transparent);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      letter-spacing: 2px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+    .brand-icon {
+      width: 20px; height: 20px;
     }
 
     .badge {
@@ -187,11 +199,20 @@
 
 <body>
   <div class="wrap">
+    <!-- Brand header -->
+    <div class="brand">
+      <svg class="brand-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M12 2L3 6.5V12C3 16.55 6.84 20.74 12 22C17.16 20.74 21 16.55 21 12V6.5L12 2Z"
+              fill="rgba(101,203,0,.15)" stroke="#65CB00" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M9 12l2 2 4-4" stroke="#65CB00" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="brand-name">RISKLENS</span>
+    </div>
     <div class="card">
       <div class="top">
         <div class="badge" aria-hidden="true">
           <svg viewBox="0 0 24 24">
-            <path d="M12 2 1 21h22L12 2zm1 14h-2v2h2v-2zm0-8h-2v6h2V8z"></path>
+            <path d="m18.581 2.14-6.265-2.089a1 1 0 0 0 -.632 0l-6.266 2.089a4.993 4.993 0 0 0 -3.418 4.743v5.117c0 7.563 9.2 11.74 9.594 11.914a1 1 0 0 0 .812 0c.394-.174 9.594-4.351 9.594-11.914v-5.117a4.993 4.993 0 0 0 -3.419-4.743zm-6.581 16.86a1 1 0 1 1 1-1 1 1 0 0 1 -1 1zm1-5a1 1 0 0 1 -2 0v-8a1 1 0 0 1 2 0z"/>
           </svg>
         </div>
         <div>

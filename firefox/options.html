@@ -126,6 +126,19 @@
     .save-btn:hover { filter: brightness(1.1); }
     .save-btn:active { transform: translateY(1px); }
 
+    .reset-btn {
+      appearance: none; border: 1px solid var(--border);
+      background: var(--btn);
+      color: var(--text);
+      font-weight: 600; font-size: 13px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: filter 160ms ease, transform 60ms ease;
+    }
+    .reset-btn:hover { filter: brightness(1.15); }
+    .reset-btn:active { transform: translateY(1px); }
+
     .status-msg {
       font-size: 12px; color: var(--green);
       opacity: 0; transition: opacity 200ms ease;
@@ -198,6 +211,18 @@
       <div class="info-note">
         <strong>Note:</strong> The danger threshold (70/100) is fixed to keep you safe and cannot be adjusted.
         Sites scoring at or above this level will trigger the warning page when blocking is enabled.
+      </div>
+      
+      <!-- Clear Cached Data -->
+      <div class="field">
+        <div class="field-label">Clear cache</div>
+        <div class="field-desc">
+          Clears all cached scores. Sites will be re-scanned on next visit.
+        </div>
+        <div class="actions">
+          <button class="reset-btn" id="resetApiBtn">Clear cache</button>
+          <span class="status-msg" id="resetStatus">Cleared!</span>
+        </div>
       </div>
 
       <!-- Save -->

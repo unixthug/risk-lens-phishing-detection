@@ -1,13 +1,37 @@
 /* ============================== RiskLens Background ============================== */
 
 const DEFAULTS = {
-  apiBaseUrl: "https://risklens-api-9e7l.onrender.com",
+  apiBaseUrl: "https://risklens-gw-2eqv4bws.uc.gateway.dev",
+  apiKey: "AIzaSyCd8QKokSdoMt7oYBoulmYMftCNOKccr4Y",
   blockingEnabled: true,
   /* Danger threshold is fixed — not user-configurable for safety */
   dangerThreshold: 70,
   cacheTtlMinutes: 10,
   bypassDurationMinutes: 60,
 };
+
+/* Ignore payment hosts to prevent blocking critical functionality */
+const PAYMENT_AUTH_HOSTS = new Set([
+  "paypal.com",
+  "checkout.paypal.com",
+  "stripe.com",
+  "checkout.stripe.com",
+  "js.stripe.com",
+  "accounts.google.com",
+  "appleid.apple.com",
+  "login.microsoftonline.com",
+  "login.live.com",
+  "auth0.com",
+  "okta.com",
+]);
+
+function isFastPathHost(host) {
+  if (!host) return false;
+  for (const domain of PAYMENT_AUTH_HOSTS) {
+    if (host === domain || host.endsWith("." + domain)) return true;
+  }
+  return false;
+}
 
 let settings = { ...DEFAULTS };
 
@@ -176,7 +200,10 @@ async function fetchModelScore(urlString) {
   try {
     const res = await fetch(endpoint, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        "x-api-key": settings.apiKey || DEFAULTS.apiKey,
+      },
       body: JSON.stringify({ url: urlString }),
     });
 
@@ -404,6 +431,8 @@ browser.webRequest.onBeforeRequest.addListener(
 
       const host = hostnameOf(url);
       if (!host) return {};
+
+      if (isFastPathHost(host)) return {};
 
       const cached = getCachedForHost(host);
 

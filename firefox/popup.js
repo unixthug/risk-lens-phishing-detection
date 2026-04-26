@@ -204,8 +204,10 @@ document.getElementById("settingsBtn").addEventListener("click", async () => {
 });
 
 document.getElementById("siteBtn").addEventListener("click", async () => {
-  await browser.tabs.create({
-    url: "https://eli-69.github.io/Risklens.github.io/",
+  const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+  const encodedURL = encodeURIComponent(tab.url);
+  browser.tabs.create({
+    url: `https://risklens-ten.vercel.app/#/insights/${encodedURL}`,
   });
 });
 

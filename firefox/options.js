@@ -31,4 +31,20 @@ async function save() {
 
 document.getElementById("saveBtn").addEventListener("click", save);
 
+async function resetApi() {
+  const all = await browser.storage.local.get(null);
+  const tabKeys = Object.keys(all).filter((k) => k.startsWith("tab:"));
+  await browser.storage.local.remove([
+    "apiBaseUrl",
+    "hostCache",
+    ...tabKeys,
+  ]);
+
+  const status = document.getElementById("resetStatus");
+  status.classList.add("show");
+  setTimeout(() => status.classList.remove("show"), 1500);
+}
+
+document.getElementById("resetApiBtn").addEventListener("click", resetApi);
+
 load();
