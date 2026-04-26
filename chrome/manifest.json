@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "RiskLens",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Scores sites for phishing risk and warns before loading dangerous pages.",
   "permissions": [
     "tabs",

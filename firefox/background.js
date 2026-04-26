@@ -349,7 +349,7 @@ async function scoreUrlInBackground(urlString) {
 browser.runtime.onInstalled.addListener((details) => {
   if (details.reason === "install") {
     browser.tabs.create({
-      url: "https://eli-69.github.io/Risklens.github.io/"
+      url: "https://risklens-ten.vercel.app/"
     });
   }
 });

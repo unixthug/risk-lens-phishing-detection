@@ -401,7 +401,7 @@ async function setStateForTab(tabId, url) {
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === "install") {
     chrome.tabs.create({
-      url: "https://eli-69.github.io/Risklens.github.io/"
+      url: "https://risklens-ten.vercel.app/"
     });
   }
 });
