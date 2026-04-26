@@ -1,0 +1,257 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>RiskLens — Unsafe Site Warning</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0b1220;
+      --card: #0f172a;
+      --border: rgba(148,163,184,.14);
+      --muted: rgba(226,232,240,.65);
+      --text: #e2e8f0;
+
+      --red: #EF4444;
+      --redDim: rgba(239,68,68,.12);
+      --green: #65CB00;
+      --greenDim: rgba(101,203,0,.12);
+
+      --btn: #1f2937;
+      --shadow: 0 20px 60px rgba(0,0,0,.55);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+
+    .wrap {
+      width: 720px; max-width: 100%;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(15,23,42,.98), rgba(15,23,42,.90));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    /* ── Header ── */
+    .top {
+      display: flex; gap: 14px;
+      padding: 20px 20px 16px;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(239,68,68,.08), transparent);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      letter-spacing: 2px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+    .brand-icon {
+      width: 20px; height: 20px;
+    }
+
+    .badge {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: grid; place-items: center;
+      background: var(--redDim);
+      border: 1px solid rgba(239,68,68,.22);
+      flex-shrink: 0;
+    }
+    .badge svg { width: 22px; height: 22px; fill: var(--red); }
+
+    h1 {
+      font-size: 18px; font-weight: 800;
+      line-height: 1.25; letter-spacing: .1px;
+    }
+
+    .sub {
+      margin-top: 6px;
+      font-size: 13px; color: var(--muted);
+      line-height: 1.45;
+    }
+
+    /* ── Content ── */
+    .content {
+      padding: 18px 20px 20px;
+      display: grid; gap: 14px;
+    }
+
+    .info {
+      background: rgba(2,6,23,.40);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      display: grid; gap: 8px;
+    }
+
+    .label {
+      font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .5px;
+      color: var(--muted);
+    }
+
+    #target {
+      font-size: 14px; font-weight: 700;
+      word-break: break-all;
+      color: #fff; line-height: 1.35;
+    }
+
+    #details {
+      font-size: 12.5px; color: var(--muted);
+      word-break: break-word;
+    }
+
+    .hint {
+      font-size: 13px; color: var(--muted);
+      line-height: 1.5;
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+
+    /* ── Actions ── */
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    button {
+      appearance: none;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-weight: 700; font-size: 13px;
+      cursor: pointer;
+      transition: transform 60ms ease, filter 150ms ease, border-color 150ms ease;
+    }
+    button:hover { filter: brightness(1.08); }
+    button:active { transform: translateY(1px); }
+
+    #back {
+      background: linear-gradient(180deg, var(--green), #52a800);
+      border-color: rgba(101,203,0,.30);
+      color: #071100;
+    }
+
+    #continue {
+      background: linear-gradient(180deg, rgba(239,68,68,.90), rgba(220,38,38,.90));
+      border-color: rgba(239,68,68,.30);
+      color: #fff;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      gap: 10px; flex-wrap: wrap;
+      margin-top: 4px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .toggle {
+      display: inline-flex; gap: 10px;
+      align-items: center;
+      font-size: 13px;
+      color: var(--muted);
+      user-select: none;
+    }
+
+    input[type="checkbox"] { transform: scale(1.1); }
+
+    .ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-weight: 600;
+      padding: 9px 14px;
+      border-radius: 12px;
+    }
+    .ghost:hover { color: var(--text); border-color: rgba(148,163,184,.24); }
+
+    @media (max-width: 600px) {
+      .actions { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <!-- Brand header -->
+    <div class="brand">
+      <svg class="brand-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M12 2L3 6.5V12C3 16.55 6.84 20.74 12 22C17.16 20.74 21 16.55 21 12V6.5L12 2Z"
+              fill="rgba(101,203,0,.15)" stroke="#65CB00" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M9 12l2 2 4-4" stroke="#65CB00" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="brand-name">RISKLENS</span>
+    </div>
+    <div class="card">
+      <div class="top">
+        <div class="badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="m18.581 2.14-6.265-2.089a1 1 0 0 0 -.632 0l-6.266 2.089a4.993 4.993 0 0 0 -3.418 4.743v5.117c0 7.563 9.2 11.74 9.594 11.914a1 1 0 0 0 .812 0c.394-.174 9.594-4.351 9.594-11.914v-5.117a4.993 4.993 0 0 0 -3.419-4.743zm-6.581 16.86a1 1 0 1 1 1-1 1 1 0 0 1 -1 1zm1-5a1 1 0 0 1 -2 0v-8a1 1 0 0 1 2 0z"/>
+          </svg>
+        </div>
+        <div>
+          <h1>This site may be unsafe</h1>
+          <p class="sub">
+            RiskLens detected patterns consistent with phishing or malicious behavior.
+            If you proceed, do not enter passwords or payment information.
+          </p>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="info">
+          <div class="label">Blocked URL</div>
+          <div id="target">Loading…</div>
+          <div id="details"></div>
+        </div>
+
+        <div class="hint">
+          <strong>Tip:</strong> Verify the domain spelling and HTTPS lock icon before trusting any login page.
+          Phishing pages often use look-alike domains with subtle misspellings.
+        </div>
+
+        <div class="actions">
+          <button id="back">← Go Back (Recommended)</button>
+          <button id="continue">Continue Anyway →</button>
+        </div>
+
+        <div class="footer">
+          <label class="toggle">
+            <input id="disable" type="checkbox" />
+            Disable blocking (stop showing warnings)
+          </label>
+          <button id="optionsBtn" class="ghost">Settings</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="warning.js"></script>
+</body>
+</html>
