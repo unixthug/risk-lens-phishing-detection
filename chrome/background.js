@@ -269,47 +269,6 @@ async function fetchModelScore(urlString) {
   }
 }
 
-/* --------------------------- DNR Rules ------------------------------ */
-
-function hostToRuleId(host) {
-  let hash = 0;
-  for (let i = 0; i < host.length; i++) {
-    hash = ((hash << 5) - hash) + host.charCodeAt(i);
-    hash |= 0;
-  }
-  return Math.abs(hash) || 1;
-}
-
-async function addDangerRule(host, score, verdict) {
-  const ruleId = hostToRuleId(host);
-  const warningUrl = chrome.runtime.getURL("warning.html") +
-    `?target=\\1&score=${score}&verdict=${encodeURIComponent(verdict || "")}`;
-
-  await chrome.declarativeNetRequest.updateDynamicRules({
-    removeRuleIds: [ruleId],
-    addRules: [{
-      id: ruleId,
-      priority: 1,
-      action: {
-        type: "redirect",
-        redirect: { regexSubstitution: warningUrl }
-      },
-      condition: {
-        regexFilter: `^(https?://${host.replace(/\./g, "\\.")}/.*)$`,
-        resourceTypes: ["main_frame"]
-      }
-    }]
-  });
-}
-
-async function removeDangerRule(host) {
-  const ruleId = hostToRuleId(host);
-  await chrome.declarativeNetRequest.updateDynamicRules({
-    removeRuleIds: [ruleId],
-    addRules: []
-  });
-}
-
 /* ------------------------------ Tab state ---------------------------------- */
 
 async function setStateForTab(tabId, url) {
@@ -380,20 +339,6 @@ async function setStateForTab(tabId, url) {
       ? "RiskLens"
       : `RiskLens: ${tabEntry.score}/100 (${tabEntry.label})`;
   await chrome.action.setTitle({ tabId, title });
-
-  /* Manage DNR rules. Don't block payment/auth hosts, allowlisted hosts,
-     or anything if blocking is disabled. */
-  const shouldBlock =
-    tabEntry.label === "danger" &&
-    settings.blockingEnabled &&
-    !isFastPathHost(host) &&
-    !isAllowlisted(url);
-
-  if (shouldBlock) {
-    await addDangerRule(host, tabEntry.score, tabEntry.verdict);
-  } else {
-    await removeDangerRule(host);
-  }
 }
 
 /* ---------- Navigation listeners ---------- */
@@ -406,10 +351,42 @@ chrome.runtime.onInstalled.addListener((details) => {
   }
 });
 
-chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  if (changeInfo.status !== "complete") return;
-  if (!tab?.url || !isHttpUrl(tab.url)) return;
-  await setStateForTab(tabId, tab.url);
+chrome.webNavigation.onBeforeNavigate.addListener(async (details) => {
+  if (details.frameId !== 0) return; // main frame only
+  await ensureLoaded();
+
+  const url = details.url;
+  if (!url || !isHttpUrl(url)) return;
+
+  // Don't intercept our own pages
+  const extBase = chrome.runtime.getURL("");
+  if (url.startsWith(extBase)) return;
+
+  if (!settings.blockingEnabled) return;
+  if (isAllowlisted(url)) return;
+
+  const host = hostnameOf(url);
+  if (!host || isFastPathHost(host)) return;
+
+  const cached = getCachedForHost(host);
+
+  if (!cached || cached.score == null) {
+    // No cache → gate behind checking.html
+    const checkUrl = chrome.runtime.getURL(
+      `checking.html?target=${encodeURIComponent(url)}`
+    );
+    chrome.tabs.update(details.tabId, { url: checkUrl });
+    return;
+  }
+
+  if (Number(cached.score) >= Number(settings.dangerThreshold)) {
+    const warnUrl = chrome.runtime.getURL(
+      `warning.html?target=${encodeURIComponent(url)}` +
+      `&score=${encodeURIComponent(String(cached.score))}` +
+      `&verdict=${encodeURIComponent(String(cached.verdict || ""))}`
+    );
+    chrome.tabs.update(details.tabId, { url: warnUrl });
+  }
 });
 
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {
@@ -467,7 +444,6 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
       allowlistHosts[host] = expiresAt;
       await saveAllowlist();
-      await removeDangerRule(host);
       sendResponse({ ok: true });
     })();
     return true;

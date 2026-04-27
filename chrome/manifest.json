@@ -6,8 +6,7 @@
   "permissions": [
     "tabs",
     "storage",
-    "declarativeNetRequest",
-    "declarativeNetRequestWithHostAccess"
+    "webNavigation"
   ],
   "host_permissions": [
     "<all_urls>",
@@ -30,6 +29,8 @@
       "resources": [
         "warning.html",
         "warning.js",
+        "checking.html",
+        "checking.js",
         "icons/safe.png",
         "icons/sus.png",
         "icons/danger.png"
