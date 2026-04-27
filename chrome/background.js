@@ -341,6 +341,27 @@ async function setStateForTab(tabId, url) {
   await chrome.action.setTitle({ tabId, title });
 }
 
+/* ------------------------- URL Scoring -------------------------- */
+
+async function scoreUrlInBackground(urlString) {
+  const host = hostnameOf(urlString);
+  if (!host) return;
+  if (getCachedForHost(host)) return;
+
+  const result = await fetchModelScore(urlString);
+  hostCache[host] = {
+    score: result.score,
+    label: result.label,
+    verdict: result.verdict,
+    explanations: result.explanations || [],
+    raw: result.raw || null,
+    reason: result.reason || null,
+    error: result.error || null,
+    updatedAtMs: now(),
+  };
+  await saveHostCache();
+}
+
 /* ---------- Navigation listeners ---------- */
 
 chrome.runtime.onInstalled.addListener((details) => {
@@ -444,6 +465,15 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
       allowlistHosts[host] = expiresAt;
       await saveAllowlist();
+      sendResponse({ ok: true });
+    })();
+    return true;
+  }
+
+  if (msg?.type === "SCORE_URL_NOW" && typeof msg.url === "string") {
+    (async () => {
+      await ensureLoaded();
+      await scoreUrlInBackground(msg.url);
       sendResponse({ ok: true });
     })();
     return true;
