@@ -31,6 +31,19 @@ async function save() {
 
 document.getElementById("saveBtn").addEventListener("click", save);
 
+(async () => {
+  /* ── Apply theme from shared storage ── */
+  const theme = await browser.storage.local.get({ popupLightMode: false });
+  if (theme.popupLightMode) document.body.classList.add("light-mode");
+
+  browser.storage.onChanged.addListener((changes, area) => {
+    if (area !== "local" || !changes.popupLightMode) return;
+    document.body.classList.toggle("light-mode", !!changes.popupLightMode.newValue);
+  });
+
+  await load();
+})();
+
 async function resetApi() {
   const all = await browser.storage.local.get(null);
   const tabKeys = Object.keys(all).filter((k) => k.startsWith("tab:"));
@@ -46,5 +59,3 @@ async function resetApi() {
 }
 
 document.getElementById("resetApiBtn").addEventListener("click", resetApi);
-
-load();

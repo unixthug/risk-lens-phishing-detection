@@ -47,4 +47,14 @@ async function resetApi() {
 
 document.getElementById("resetApiBtn").addEventListener("click", resetApi);
 
-load();
+(async () => {
+  const theme = await chrome.storage.local.get({ popupLightMode: false });
+  if (theme.popupLightMode) document.body.classList.add("light-mode");
+
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area !== "local" || !changes.popupLightMode) return;
+    document.body.classList.toggle("light-mode", !!changes.popupLightMode.newValue);
+  });
+
+  await load();
+})();

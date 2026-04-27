@@ -4,6 +4,13 @@ function qp(name) {
 }
 
 (async () => {
+  const theme = await chrome.storage.local.get({ popupLightMode: false });
+  if (theme.popupLightMode) document.body.classList.add("light-mode");
+
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area !== "local" || !changes.popupLightMode) return;
+    document.body.classList.toggle("light-mode", !!changes.popupLightMode.newValue);
+  });
   const target = qp("target") || "";
   const score = qp("score");
   const verdict = qp("verdict");

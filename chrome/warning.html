@@ -33,6 +33,37 @@
       padding: 24px;
     }
 
+    body.light-mode {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --border: rgba(17,24,39,.10);
+      --text: #111827;
+      --muted: rgba(17,24,39,.55);
+      --btn: #e5e7eb;
+      --redDim: rgba(239,68,68,.08);
+      --shadow: 0 14px 40px rgba(0,0,0,.08);
+    }
+    body.light-mode { background: var(--bg); }
+    body.light-mode .card {
+      background: var(--card);
+    }
+    body.light-mode .info {
+      background: rgba(0,0,0,.03);
+    }
+    body.light-mode #target {
+      color: var(--text);
+    }
+    body.light-mode .hint {
+      background: rgba(0,0,0,.02);
+    }
+    body.light-mode #continue {
+      background: rgba(239,68,68,.08);
+      color: #b91c1c;
+    }
+    body.light-mode #continue:hover {
+      background: rgba(239,68,68,.14);
+    }
+
     .wrap {
       width: 720px; max-width: 100%;
     }
@@ -150,15 +181,21 @@
     button:active { transform: translateY(1px); }
 
     #back {
-      background: linear-gradient(180deg, var(--green), #52a800);
-      border-color: rgba(101,203,0,.30);
-      color: #071100;
+      background: var(--btn);
+      border-color: var(--border);
+      color: var(--text);
+    }
+    #back:hover {
+      border-color: rgba(148,163,184,.30);
     }
 
     #continue {
-      background: linear-gradient(180deg, rgba(239,68,68,.90), rgba(220,38,38,.90));
+      background: rgba(239,68,68,.10);
       border-color: rgba(239,68,68,.30);
-      color: #fff;
+      color: var(--red);
+    }
+    #continue:hover {
+      background: rgba(239,68,68,.15);
     }
 
     /* ── Footer ── */
